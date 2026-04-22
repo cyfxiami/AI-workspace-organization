@@ -165,6 +165,9 @@
                     </div>
                     <!-- AI分析按钮 -->
                     <div class="ai-analysis-section" style="margin-top: 15px; margin-bottom: 0;">
+                        <button class="predict-performance-btn" onclick="predictPerformance()">
+                            预测本月业绩
+                        </button>
                         <button class="ai-analysis-btn" onclick="analyzePerformanceGap()">
                             AI分析业绩缺口并生成商机列表
                         </button>
@@ -455,13 +458,16 @@
                     <div class="module-content">
                         <div class="insight-profile">
                             <div class="insight-profile-header">
-                                <img src="images/Avatar3.png" alt="客户头像" class="insight-avatar">
+                                <img src="images/Avatar3.png" alt="客户头像" class="insight-avatar" id="insight-avatar">
                                 <div class="insight-profile-info">
                                     <div class="insight-profile-name-tag">
                                         <span class="insight-profile-name">李华</span>
                                         <span class="insight-profile-tag" id="insight-tag">高净值</span>
                                     </div>
-                                    <div class="insight-profile-detail">129****666</div>
+                                    <div class="insight-profile-detail-row">
+                                        <span class="insight-profile-detail">129****666</span>
+                                        <button class="marketing-script-btn" onclick="generateMarketingScript()">营销话术生成</button>
+                                    </div>
                                 </div>
                                 <!-- 商机数据展示 -->
                                 <div class="insight-stats-section">
@@ -487,7 +493,7 @@
                                             <div class="insight-progress-bar-dual">
                                                 <div class="insight-progress-fill insight-progress-fill-green" id="insight-progress-fill" style="width: 60%;"></div>
                                             </div>
-                                            <span class="insight-progress-label-left">资产配置失衡</span>
+                                            <span class="insight-progress-label-left" id="insight-position-comment">资产配置失衡</span>
                                         </div>
                                     </div>
                                     <!-- 风险偏好 -->
@@ -2051,6 +2057,7 @@
                     portfolio: '稳健型配置',
                     portfolioValue: '4.5-6%',
                     riskProgress: 60,
+                    positionProgress: 45,
                     aiPaths: [
                         { icon: '📈', text: '高净值客户专属理财产品：直接推荐私行产品' },
                         { icon: '👥', text: '家庭资产配置：家族信托配套服务' }
@@ -2067,6 +2074,7 @@
                     portfolio: '成长型配置',
                     portfolioValue: '8-12%',
                     riskProgress: 80,
+                    positionProgress: 75,
                     aiPaths: [
                         { icon: '📈', text: '企业主专属产品：PE股权基金推荐' },
                         { icon: '👥', text: '企业投融资顾问：企业上市配套服务' }
@@ -2083,6 +2091,7 @@
                     portfolio: '激进型配置',
                     portfolioValue: '15-25%',
                     riskProgress: 90,
+                    positionProgress: 92,
                     aiPaths: [
                         { icon: '📈', text: '专业投资者专属：量化对冲基金推荐' },
                         { icon: '👥', text: '衍生品交易：期权期货配套服务' }
@@ -2099,6 +2108,7 @@
                     portfolio: '稳健型配置',
                     portfolioValue: '3-4.5%',
                     riskProgress: 30,
+                    positionProgress: 25,
                     aiPaths: [
                         { icon: '📈', text: '新富人群入门：固收+产品推荐' },
                         { icon: '👥', text: '财商教育：投资启蒙配套服务' }
@@ -2117,6 +2127,7 @@
                     portfolio: '机构定制配置',
                     portfolioValue: '5-8%',
                     riskProgress: 50,
+                    positionProgress: 68,
                     aiPaths: [
                         { icon: '📈', text: '上市公司市值管理：定向增发配套' },
                         { icon: '👥', text: '员工持股计划：股权激励服务' }
@@ -2133,6 +2144,7 @@
                     portfolio: 'REITs配置',
                     portfolioValue: '6-9%',
                     riskProgress: 45,
+                    positionProgress: 55,
                     aiPaths: [
                         { icon: '📈', text: '房企融资配套：不动产基金推荐' },
                         { icon: '👥', text: '供应链金融：上下游配套服务' }
@@ -2149,6 +2161,7 @@
                     portfolio: '固收类配置',
                     portfolioValue: '2.5-4%',
                     riskProgress: 25,
+                    positionProgress: 35,
                     aiPaths: [
                         { icon: '📈', text: '同业合作：银行理财代销推荐' },
                         { icon: '👥', text: '资金托管：托管业务配套服务' }
@@ -2165,6 +2178,7 @@
                     portfolio: '科技类配置',
                     portfolioValue: '12-20%',
                     riskProgress: 85,
+                    positionProgress: 88,
                     aiPaths: [
                         { icon: '📈', text: '科创企业专属：硬科技基金推荐' },
                         { icon: '👥', text: '产业投资：战略投资配套服务' }
@@ -2287,6 +2301,7 @@
                 customerData.personal[i].match = getRandomMatch();
                 customerData.personal[i].portfolioValue = portfolioValueRanges[Math.floor(Math.random() * portfolioValueRanges.length)];
                 customerData.personal[i].riskProgress = Math.floor(Math.random() * 70 + 20);
+                customerData.personal[i].positionProgress = Math.floor(Math.random() * 80 + 15);
                 customerData.personal[i].aiReason = getRandomReason(personalReasons, customerData.personal[i].match);
             }
 
@@ -2302,6 +2317,7 @@
                 customerData.institution[i].match = getRandomMatch();
                 customerData.institution[i].portfolioValue = portfolioValueRanges[Math.floor(Math.random() * portfolioValueRanges.length)];
                 customerData.institution[i].riskProgress = Math.floor(Math.random() * 70 + 20);
+                customerData.institution[i].positionProgress = Math.floor(Math.random() * 80 + 15);
                 customerData.institution[i].aiReason = getRandomReason(institutionReasons, customerData.institution[i].match);
             }
         }
@@ -2468,10 +2484,41 @@
             const nameEl = document.querySelector('.insight-profile-name');
             const tagEl = document.getElementById('insight-tag');
             const details = document.querySelectorAll('.insight-profile-detail');
+            const avatarEl = document.getElementById('insight-avatar');
             
             if (nameEl) nameEl.textContent = customer.name;
             if (tagEl) tagEl.textContent = customer.tag;
             if (details[0]) details[0].textContent = customer.contact;
+            
+            // 更新头像 - 根据客户类型显示不同头像
+            if (avatarEl) {
+                const isInstitution = customerData.institution.some(c => c.name === customer.name && c.tag === customer.tag);
+                // 移除可能存在的fallback
+                const parent = avatarEl.parentElement;
+                const fallback = parent.querySelector('.institution-avatar-fallback');
+                if (fallback) fallback.remove();
+                avatarEl.style.display = 'block';
+                
+                if (isInstitution) {
+                    // 机构客户使用机构头像
+                    avatarEl.src = 'images/institution-avatar.svg';
+                    avatarEl.onerror = function() {
+                        this.onerror = null;
+                        this.style.display = 'none';
+                        if (!parent.querySelector('.institution-avatar-fallback')) {
+                            const fallbackDiv = document.createElement('div');
+                            fallbackDiv.className = 'institution-avatar-fallback';
+                            fallbackDiv.innerHTML = '🏢';
+                            parent.insertBefore(fallbackDiv, this);
+                        }
+                    };
+                } else {
+                    // 个人客户使用随机个人头像
+                    const avatarIndex = Math.floor(Math.random() * 7) + 1;
+                    avatarEl.src = `images/Avatar${avatarIndex}.png`;
+                    avatarEl.onerror = null;
+                }
+            }
 
             // 更新预计贡献收入和匹配度
             const revenueEl = document.getElementById('insight-revenue');
@@ -2507,6 +2554,31 @@
             if (reasonEl && customer.aiReason) {
                 reasonEl.textContent = customer.aiReason;
             }
+
+            // 更新持仓进度条和持仓评价
+            const positionFill = document.getElementById('insight-progress-fill');
+            const positionCommentEl = document.getElementById('insight-position-comment');
+            if (positionFill && customer.positionProgress !== undefined) {
+                positionFill.style.width = customer.positionProgress + '%';
+            }
+            if (positionCommentEl && customer.positionProgress !== undefined) {
+                positionCommentEl.textContent = getPositionComment(customer.positionProgress);
+            }
+        }
+
+        // 根据持仓进度值生成评价
+        function getPositionComment(progress) {
+            if (progress <= 30) {
+                return '资产配置失衡';
+            } else if (progress <= 50) {
+                return '权益类资产偏低';
+            } else if (progress <= 70) {
+                return '配置较为均衡';
+            } else if (progress <= 85) {
+                return '收益潜力较高';
+            } else {
+                return '配置结构优秀';
+            }
         }
 
         // AI分析业绩缺口并生成商机列表
@@ -2538,6 +2610,309 @@
                 btn.textContent = originalText;
                 btn.disabled = false;
             }, 800);
+        }
+
+        // 预测本月业绩
+        function predictPerformance() {
+            // 显示弹窗
+            showPredictModal();
+            
+            // 开始分析过程
+            startPredictAnalysis();
+        }
+
+        // 显示预测弹窗
+        function showPredictModal() {
+            const modal = document.getElementById('predict-modal');
+            const analyzingDiv = document.getElementById('predict-analyzing');
+            const resultDiv = document.getElementById('predict-result');
+            const confirmBtn = document.getElementById('predict-btn-confirm');
+            
+            // 重置状态
+            analyzingDiv.style.display = 'block';
+            resultDiv.style.display = 'none';
+            confirmBtn.style.display = 'none';
+            
+            // 重置所有步骤
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`step-${i}`);
+                step.className = 'predict-step';
+                step.querySelector('.step-status').textContent = '等待中';
+            }
+            
+            // 显示弹窗
+            modal.classList.add('show');
+        }
+
+        // 关闭预测弹窗
+        function closePredictModal() {
+            const modal = document.getElementById('predict-modal');
+            modal.classList.remove('show');
+        }
+
+        // 开始预测分析过程
+        function startPredictAnalysis() {
+            const steps = [
+                { id: 1, duration: 800 },
+                { id: 2, duration: 1000 },
+                { id: 3, duration: 1200 },
+                { id: 4, duration: 800 }
+            ];
+            
+            let currentStep = 0;
+            
+            function processStep() {
+                if (currentStep > 0) {
+                    // 标记上一步为已完成
+                    const prevStep = document.getElementById(`step-${steps[currentStep - 1].id}`);
+                    prevStep.className = 'predict-step completed';
+                    prevStep.querySelector('.step-status').textContent = '已完成';
+                }
+                
+                if (currentStep < steps.length) {
+                    // 激活当前步骤
+                    const step = document.getElementById(`step-${steps[currentStep].id}`);
+                    step.className = 'predict-step active';
+                    step.querySelector('.step-status').textContent = '进行中';
+                    
+                    currentStep++;
+                    setTimeout(processStep, steps[currentStep - 1].duration);
+                } else {
+                    // 所有步骤完成，显示结果
+                    setTimeout(showPredictResult, 500);
+                }
+            }
+            
+            // 开始第一步
+            processStep();
+        }
+
+        // 显示预测结果
+        function showPredictResult() {
+            const analyzingDiv = document.getElementById('predict-analyzing');
+            const resultDiv = document.getElementById('predict-result');
+            const confirmBtn = document.getElementById('predict-btn-confirm');
+            
+            // 生成随机预测数据
+            const baseAmount = 1500000 + Math.floor(Math.random() * 800000);
+            const targetRate = 95 + Math.floor(Math.random() * 20);
+            const growthRate = (10 + Math.random() * 15).toFixed(1);
+            
+            // 更新结果数据
+            document.getElementById('predict-amount').textContent = '¥' + baseAmount.toLocaleString();
+            document.getElementById('predict-rate').textContent = targetRate + '%';
+            
+            // 切换显示
+            analyzingDiv.style.display = 'none';
+            resultDiv.style.display = 'block';
+            confirmBtn.style.display = 'inline-block';
+        }
+
+        // 营销话术生成相关函数
+        let currentCustomerForScript = null;
+
+        // 生成营销话术
+        function generateMarketingScript() {
+            // 获取当前选中的客户
+            const nameEl = document.querySelector('.insight-profile-name');
+            const tagEl = document.getElementById('insight-tag');
+            
+            if (!nameEl || !tagEl) {
+                alert('请先选择一位客户');
+                return;
+            }
+            
+            const customerName = nameEl.textContent;
+            const customerTag = tagEl.textContent;
+            
+            // 查找完整客户数据
+            currentCustomerForScript = findCustomerData(customerName, customerTag);
+            
+            // 显示弹窗
+            showScriptModal();
+            
+            // 开始生成过程
+            startScriptGeneration();
+        }
+
+        // 查找客户数据
+        function findCustomerData(name, tag) {
+            // 在个人客户中查找
+            const personalCustomer = customerData.personal.find(c => c.name === name && c.tag === tag);
+            if (personalCustomer) return { ...personalCustomer, type: 'personal' };
+            
+            // 在机构客户中查找
+            const institutionCustomer = customerData.institution.find(c => c.name === name && c.tag === tag);
+            if (institutionCustomer) return { ...institutionCustomer, type: 'institution' };
+            
+            // 如果找不到，返回默认数据
+            return {
+                name: name,
+                tag: tag,
+                type: 'personal',
+                contact: '',
+                revenue: '¥500,000',
+                match: '90%',
+                aiPaths: [{ icon: '📈', text: '专属理财产品推荐' }],
+                aiReason: '基于您的资产配置需求'
+            };
+        }
+
+        // 显示营销话术弹窗
+        function showScriptModal() {
+            const modal = document.getElementById('script-modal');
+            const generatingDiv = document.getElementById('script-generating');
+            const resultDiv = document.getElementById('script-result');
+            const regenerateBtn = document.getElementById('script-btn-regenerate');
+            
+            // 重置状态
+            generatingDiv.style.display = 'block';
+            resultDiv.style.display = 'none';
+            regenerateBtn.style.display = 'none';
+            
+            // 重置进度条
+            document.getElementById('script-progress-fill').style.width = '0%';
+            
+            // 显示弹窗
+            modal.classList.add('show');
+        }
+
+        // 关闭营销话术弹窗
+        function closeScriptModal() {
+            const modal = document.getElementById('script-modal');
+            modal.classList.remove('show');
+        }
+
+        // 开始生成营销话术
+        function startScriptGeneration() {
+            const progressFill = document.getElementById('script-progress-fill');
+            const progressText = document.querySelector('.script-progress-text');
+            
+            const steps = [
+                { progress: 25, text: '分析客户画像中...', duration: 600 },
+                { progress: 50, text: '匹配产品方案中...', duration: 800 },
+                { progress: 75, text: '生成营销话术中...', duration: 700 },
+                { progress: 100, text: '优化文案表达中...', duration: 600 }
+            ];
+            
+            let currentStep = 0;
+            
+            function processStep() {
+                if (currentStep < steps.length) {
+                    progressFill.style.width = steps[currentStep].progress + '%';
+                    progressText.textContent = steps[currentStep].text;
+                    
+                    currentStep++;
+                    setTimeout(processStep, steps[currentStep - 1].duration);
+                } else {
+                    // 生成完成，显示结果
+                    setTimeout(() => {
+                        showScriptResult();
+                    }, 300);
+                }
+            }
+            
+            processStep();
+        }
+
+        // 显示生成的营销话术
+        function showScriptResult() {
+            const generatingDiv = document.getElementById('script-generating');
+            const resultDiv = document.getElementById('script-result');
+            const regenerateBtn = document.getElementById('script-btn-regenerate');
+            const contentDiv = document.getElementById('script-content');
+            
+            // 生成定制化话术
+            const script = generateCustomScript(currentCustomerForScript);
+            
+            // 更新内容
+            contentDiv.innerHTML = `<p>${script}</p>`;
+            
+            // 切换显示
+            generatingDiv.style.display = 'none';
+            resultDiv.style.display = 'block';
+            regenerateBtn.style.display = 'inline-block';
+        }
+
+        // 生成定制化营销话术
+        function generateCustomScript(customer) {
+            if (!customer) return '请先选择一位客户';
+            
+            const { name, tag, type, aiPaths, match } = customer;
+            
+            // 根据客户标签生成不同的话术
+            const scripts = {
+                '高净值': `${name}先生/女士，您好！针对您<span class="script-highlight">高净值客户</span>的资产配置需求，为您推荐我们的<span class="script-highlight">私行专属理财产品</span>。根据您的风险承受能力和收益目标，${aiPaths[0]?.text || '我们为您定制了专属投资方案'}。预计年化收益率${match}，助您实现财富稳健增值。`,
+                
+                '企业主': `${name}先生/女士，您好！了解到您作为<span class="script-highlight">企业主</span>有资金周转和资产配置的双重需求，为您推荐<span class="script-highlight">企业主专属金融服务</span>。${aiPaths[0]?.text || '我们的企业金融服务团队将为您提供一站式解决方案'}，助力企业发展与财富增长双赢。`,
+                
+                '专业投资者': `${name}先生/女士，您好！作为<span class="script-highlight">专业投资者</span>，为您精选<span class="script-highlight">量化对冲基金</span>等高端投资产品。${aiPaths[0]?.text || '我们的专业投顾团队将为您提供深度市场分析和定制策略'}，助您把握市场机遇。`,
+                
+                '新富人群': `${name}先生/女士，您好！恭喜您成为<span class="script-highlight">新富人群</span>！为您推荐<span class="script-highlight">固收+产品组合</span>，${aiPaths[0]?.text || '帮助您在保障本金安全的同时获取稳健收益'}。同时我们提供专业的财商教育服务，助您建立科学的资产配置理念。`,
+                
+                '企业家': `${name}先生/女士，您好！作为<span class="script-highlight">企业家</span>，为您量身定制<span class="script-highlight">家族信托与财富传承方案</span>。${aiPaths[0]?.text || '我们的专业团队将为您提供全方位的家族财富管理服务'}，实现财富的保值增值与有序传承。`,
+                
+                '白领精英': `${name}先生/女士，您好！针对<span class="script-highlight">白领精英</span>的理财需求，为您推荐<span class="script-highlight">智能投顾服务</span>。${aiPaths[0]?.text || '根据您的收入特点和风险偏好，我们为您匹配了最适合的投资组合'}，让理财更简单高效。`,
+                
+                '上市公司': `${name}您好！作为<span class="script-highlight">上市公司</span>，为您推荐<span class="script-highlight">市值管理与员工激励综合方案</span>。${aiPaths[0]?.text || '我们的机构服务团队将为您提供专业的资本市场服务'}，助力公司长期价值提升。`,
+                
+                '房地产': `${name}您好！针对<span class="script-highlight">房地产企业</span>的资金管理需求，为您推荐<span class="script-highlight">不动产基金与供应链金融服务</span>。${aiPaths[0]?.text || '我们将为您提供灵活的融资方案和专业的资产管理服务'}，优化资金配置效率。`,
+                
+                '银行理财': `${name}您好！作为<span class="script-highlight">银行理财机构</span>，期待与您开展<span class="script-highlight">同业合作</span>。${aiPaths[0]?.text || '我们提供优质的理财产品代销和专业的资金托管服务'}，实现互利共赢。`,
+                
+                '互联网科技': `${name}您好！针对<span class="script-highlight">互联网科技企业</span>的投资需求，为您推荐<span class="script-highlight">硬科技基金与战略投资服务</span>。${aiPaths[0]?.text || '我们的产业投资团队将助力您的生态布局'}，把握科技创新机遇。`
+            };
+            
+            // 返回对应标签的话术，如果没有则使用通用话术
+            return scripts[tag] || `${name}先生/女士，您好！基于您的<span class="script-highlight">${tag}</span>身份和资产配置需求，为您推荐<span class="script-highlight">专属理财产品</span>。${aiPaths[0]?.text || '我们将为您提供专业的投资建议和优质的服务体验'}。预计匹配度${match}，期待为您服务！`;
+        }
+
+        // 重新生成话术
+        function regenerateScript() {
+            const generatingDiv = document.getElementById('script-generating');
+            const resultDiv = document.getElementById('script-result');
+            const progressFill = document.getElementById('script-progress-fill');
+            
+            // 重置状态
+            generatingDiv.style.display = 'block';
+            resultDiv.style.display = 'none';
+            progressFill.style.width = '0%';
+            
+            // 重新生成
+            startScriptGeneration();
+        }
+
+        // 复制话术到剪贴板
+        function copyScript() {
+            const contentDiv = document.getElementById('script-content');
+            const scriptText = contentDiv.innerText;
+            
+            // 创建临时textarea来复制文本
+            const textarea = document.createElement('textarea');
+            textarea.value = scriptText;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                
+                // 显示复制成功状态
+                const copyBtn = document.querySelector('.script-btn-copy');
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<span>✓</span> 已复制';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = '<span>📋</span> 复制话术';
+                }, 2000);
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制');
+            }
+            
+            document.body.removeChild(textarea);
         }
 
         // 打开产品文档
@@ -5472,6 +5847,119 @@
                         </div>
                     </section>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 预测本月业绩弹窗 -->
+    <div id="predict-modal" class="predict-modal">
+        <div class="predict-modal-content">
+            <div class="predict-modal-header">
+                <h3>本月业绩预测</h3>
+                <span class="predict-modal-close" onclick="closePredictModal()">&times;</span>
+            </div>
+            <div class="predict-modal-body">
+                <!-- 分析过程 -->
+                <div id="predict-analyzing" class="predict-analyzing">
+                    <div class="predict-loading">
+                        <div class="predict-spinner"></div>
+                        <p>正在分析客户数据...</p>
+                    </div>
+                    <div class="predict-steps">
+                        <div class="predict-step" id="step-1">
+                            <span class="step-icon">1</span>
+                            <span class="step-text">分析历史业绩数据</span>
+                            <span class="step-status">进行中</span>
+                        </div>
+                        <div class="predict-step" id="step-2">
+                            <span class="step-icon">2</span>
+                            <span class="step-text">评估客户活跃度</span>
+                            <span class="step-status">等待中</span>
+                        </div>
+                        <div class="predict-step" id="step-3">
+                            <span class="step-icon">3</span>
+                            <span class="step-text">计算潜在收入</span>
+                            <span class="step-status">等待中</span>
+                        </div>
+                        <div class="predict-step" id="step-4">
+                            <span class="step-icon">4</span>
+                            <span class="step-text">生成预测报告</span>
+                            <span class="step-status">等待中</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 预测结果 -->
+                <div id="predict-result" class="predict-result" style="display: none;">
+                    <div class="predict-result-header">
+                        <div class="predict-result-icon">✓</div>
+                        <h4>预测完成</h4>
+                    </div>
+                    <div class="predict-result-content">
+                        <div class="predict-result-item">
+                            <span class="predict-result-label">预计本月业绩</span>
+                            <span class="predict-result-value" id="predict-amount">¥1,850,000</span>
+                        </div>
+                        <div class="predict-result-item">
+                            <span class="predict-result-label">目标完成率</span>
+                            <span class="predict-result-value" id="predict-rate">108%</span>
+                        </div>
+                        <div class="predict-result-item">
+                            <span class="predict-result-label">较上月增长</span>
+                            <span class="predict-result-value predict-positive">+15.6%</span>
+                        </div>
+                    </div>
+                    <div class="predict-suggestion">
+                        <h5>优化建议</h5>
+                        <p>建议重点关注高净值客户的资产配置需求，把握市场机遇。预计本周可完成 3-5 个大额订单，建议提前准备相关产品方案。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="predict-modal-footer">
+                <button class="predict-btn-primary" id="predict-btn-confirm" onclick="closePredictModal()" style="display: none;">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 营销话术生成弹窗 -->
+    <div id="script-modal" class="script-modal">
+        <div class="script-modal-content">
+            <div class="script-modal-header">
+                <h3>AI营销话术生成</h3>
+                <span class="script-modal-close" onclick="closeScriptModal()">&times;</span>
+            </div>
+            <div class="script-modal-body">
+                <!-- 生成中状态 -->
+                <div id="script-generating" class="script-generating">
+                    <div class="script-loading">
+                        <div class="script-spinner"></div>
+                        <p>AI正在分析客户画像...</p>
+                    </div>
+                    <div class="script-progress">
+                        <div class="script-progress-bar">
+                            <div class="script-progress-fill" id="script-progress-fill"></div>
+                        </div>
+                        <p class="script-progress-text">分析客户需求中...</p>
+                    </div>
+                </div>
+                <!-- 生成结果 -->
+                <div id="script-result" class="script-result" style="display: none;">
+                    <div class="script-result-header">
+                        <div class="script-result-icon">✨</div>
+                        <h4>专属营销话术已生成</h4>
+                    </div>
+                    <div class="script-content" id="script-content">
+                        <!-- 动态生成的话术内容 -->
+                    </div>
+                    <div class="script-actions">
+                        <button class="script-btn-copy" onclick="copyScript()">
+                            <span>📋</span> 复制话术
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="script-modal-footer">
+                <button class="script-btn-secondary" onclick="closeScriptModal()">关闭</button>
+                <button class="script-btn-primary" id="script-btn-regenerate" onclick="regenerateScript()" style="display: none;">重新生成</button>
             </div>
         </div>
     </div>
