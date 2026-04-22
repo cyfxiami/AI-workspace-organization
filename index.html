@@ -457,8 +457,11 @@
                             <div class="insight-profile-header">
                                 <img src="images/Avatar3.png" alt="客户头像" class="insight-avatar">
                                 <div class="insight-profile-info">
-                                    <div class="insight-profile-name">李华</div>
-                                    <div class="insight-profile-detail">客户信息：129****666</div>
+                                    <div class="insight-profile-name-tag">
+                                        <span class="insight-profile-name">李华</span>
+                                        <span class="insight-profile-tag" id="insight-tag">高净值</span>
+                                    </div>
+                                    <div class="insight-profile-detail">129****666</div>
                                 </div>
                                 <!-- 商机数据展示 -->
                                 <div class="insight-stats-section">
@@ -529,6 +532,17 @@
                                     该客户近期有大额资金到期，资产配置以存款为主，收益偏低。建议推荐稳健型理财产品，预计匹配度92%。
                                 </div>
                             </div>
+                            <!-- 操作按钮 -->
+                            <div class="insight-action-buttons">
+                                <button class="phone-call-btn" onclick="makePhoneCall()">
+                                    <span class="phone-icon">📞</span>
+                                    <span>电话</span>
+                                </button>
+                                <button class="ai-script-btn" onclick="openAIScriptModal()">
+                                    <span class="ai-icon">🤖</span>
+                                    <span>AI话术生成</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -562,6 +576,34 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- AI话术生成弹窗 -->
+    <div id="ai-script-modal" class="ai-script-modal" style="display: none;">
+        <div class="ai-script-modal-overlay" onclick="closeAIScriptModal()"></div>
+        <div class="ai-script-modal-container">
+            <div class="ai-script-modal-header">
+                <h3>🤖 AI话术生成</h3>
+                <button class="ai-script-close-btn" onclick="closeAIScriptModal()">✕</button>
+            </div>
+            <div class="ai-script-modal-content">
+                <div class="ai-script-customer-info">
+                    <span class="ai-script-customer-label">当前客户：</span>
+                    <span class="ai-script-customer-name" id="ai-script-customer-name">李华</span>
+                </div>
+                <div class="ai-script-textarea-container">
+                    <textarea class="ai-script-textarea" id="ai-script-textarea" readonly>李华先生，针对您的养老规划需求，为您推荐稳健型年金险产品。该产品收益稳定，风险可控，非常适合您的资产配置需求。</textarea>
+                </div>
+                <div class="ai-script-actions">
+                    <button class="ai-script-copy-btn" onclick="copyAIScript()">
+                        📋 复制话术
+                    </button>
+                    <button class="ai-script-regenerate-btn" onclick="regenerateAIScript()">
+                        🔄 重新生成
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- 二级页面：探马详情 - 潜在客户与业务线索 -->
@@ -2463,10 +2505,12 @@
         function updateCustomerInsight(customer) {
             // 更新客户基本信息
             const nameEl = document.querySelector('.insight-profile-name');
+            const tagEl = document.getElementById('insight-tag');
             const details = document.querySelectorAll('.insight-profile-detail');
             
             if (nameEl) nameEl.textContent = customer.name;
-            if (details[0]) details[0].textContent = '客户信息：' + customer.contact;
+            if (tagEl) tagEl.textContent = customer.tag;
+            if (details[0]) details[0].textContent = customer.contact;
 
             // 更新预计贡献收入和匹配度
             const revenueEl = document.getElementById('insight-revenue');
@@ -2501,6 +2545,84 @@
             const reasonEl = document.getElementById('insight-reason');
             if (reasonEl && customer.aiReason) {
                 reasonEl.textContent = customer.aiReason;
+            }
+
+            // 更新AI话术生成弹窗中的客户名称
+            const scriptCustomerNameEl = document.getElementById('ai-script-customer-name');
+            if (scriptCustomerNameEl) scriptCustomerNameEl.textContent = customer.name;
+        }
+
+        // 当前选中的客户数据
+        let currentCustomerForScript = null;
+
+        // 拨打电话
+        function makePhoneCall() {
+            const nameEl = document.querySelector('.insight-profile-name');
+            const customerName = nameEl ? nameEl.textContent : '客户';
+            alert(`正在拨打 ${customerName} 的电话...`);
+        }
+
+        // 打开AI话术生成弹窗
+        function openAIScriptModal() {
+            const modal = document.getElementById('ai-script-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // 生成话术
+                generateAIScript();
+            }
+        }
+
+        // 关闭AI话术生成弹窗
+        function closeAIScriptModal() {
+            const modal = document.getElementById('ai-script-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // 生成AI话术
+        function generateAIScript() {
+            const nameEl = document.querySelector('.insight-profile-name');
+            const tagEl = document.getElementById('insight-tag');
+            const customerName = nameEl ? nameEl.textContent : '客户';
+            const customerTag = tagEl ? tagEl.textContent : '';
+
+            // 话术模板库
+            const scriptTemplates = [
+                `${customerName}先生/女士，针对您的${customerTag}需求，为您推荐稳健型理财产品。该产品收益稳定，风险可控，非常适合您的资产配置需求。`,
+                `${customerName}您好！根据您的资产情况，我们为您量身定制了一套理财方案。建议您配置部分年金险产品，为未来的养老生活做好规划。`,
+                `${customerName}先生/女士，针对您的资产配置需求，我们有一款非常适合您的产品。该产品不仅收益可观，还能为您提供全面的保障。`,
+                `您好${customerName}！根据您的风险偏好和资产状况，我建议您关注一下我们的混合型基金产品，它能在控制风险的前提下为您带来稳健的收益。`,
+                `${customerName}，针对您的养老规划需求，我建议您配置年金险产品，这样既能保障未来的生活品质，又能让您的资产稳健增值。`
+            ];
+
+            // 随机选择一个模板
+            const randomIndex = Math.floor(Math.random() * scriptTemplates.length);
+            const textarea = document.getElementById('ai-script-textarea');
+            if (textarea) {
+                textarea.value = scriptTemplates[randomIndex];
+            }
+        }
+
+        // 重新生成话术
+        function regenerateAIScript() {
+            generateAIScript();
+        }
+
+        // 复制话术
+        function copyAIScript() {
+            const textarea = document.getElementById('ai-script-textarea');
+            if (textarea) {
+                textarea.select();
+                document.execCommand('copy');
+                
+                // 显示复制成功提示
+                const copyBtn = document.querySelector('.ai-script-copy-btn');
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '✅ 已复制';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 1500);
             }
         }
 
